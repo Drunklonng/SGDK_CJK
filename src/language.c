@@ -33,7 +33,7 @@ const u32 maskColors[16][8] ={{0X0000000f, 0X000000f0, 0X00000f00, 0X0000f000, 0
 const u8 *BIN_FONT_CJK[5] = {&BIN_FONT_UTF8, &BIN_FONT_JIS, &BIN_FONT_GBK, &BIN_FONT_KSC, &BIN_FONT_BIG5};
 
 
-char *getString(u8 lang, u8 index)
+char *getStringEx(u8 lang, u8 index)
 {
     switch (lang)
     {
@@ -68,6 +68,11 @@ char *getString(u8 lang, u8 index)
             break;
         }
     }
+}
+
+char *getString(u8 index)
+{
+    return getStringEx(language, index);
 }
 
 void setLanguage(u8 lang)
@@ -528,9 +533,14 @@ void VDP_drawTextCJK(VDPPlane plane, u8 palette, u8 backColor, unsigned char *te
             case ASCII_COLOR:
             {
                 u8 temp = text[index + 1];
-                if (temp >= 48 && temp <= 63)
+                if (temp >= 48 && temp <= 57)
                 {
                     textColor = temp - 48;
+                    index++;
+                }
+                else if (temp >= 97 && temp <= 102)
+                {
+                    textColor = temp - 97 + 10;
                     index++;
                 }
                 else
